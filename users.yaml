@@ -1,0 +1,20 @@
+---
+- name: users Playbook
+  become: yes
+  become_method: sudo
+  hosts: all
+  tasks:
+  - name: user add
+    user: 
+      name: Sam 
+      comment: "john S"
+      groups: wheel 
+      generate_ssh_key: yes 
+      state: absent
+    
+  - name: user add Nick
+    user: 
+      name: Nick
+      state: absent
+
+
