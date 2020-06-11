@@ -1,0 +1,42 @@
+--- 
+- name: Install R1soft Agent
+  become: yes
+  become_method: sudo
+  user: centos
+  hosts: all
+  tasks: 
+  
+  - name: creates a repo
+    when: (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "6")
+    copy:
+      src: r1soft.repo
+      dest: /etc/yum.repos.d/r1soft.repo
+
+
+  - name: Install agent
+    when: (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "6")
+    package:
+      name: server-backup-enterprise-agent 
+      state: present 
+
+
+  - name: start agent
+    when: (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "6")
+    service:
+      name: cdp-agent
+      state: restarted 
+      enabled: yes 
+
+  - name: stop iptables
+    when: (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "6")
+    service:
+      name: iptables
+      state: stopped
+      enabled: no
+
+
+
+  - name: get key
+    when: (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "6") 
+    command: "r1soft-setup --get-key  http://3.8.200.30:8080/"
+
